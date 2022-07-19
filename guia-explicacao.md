@@ -1,6 +1,6 @@
 ## 1. Guia da aula com explicações sobre o código
 
-**Aula 2 - Adicionando comportamentos**
+## 2. **Aula 2 - Adicionando comportamentos**
 - Video Atributos Privados:
 O saldo não deveria ser acessado fora de sua classe. Ao ser instanciado você consegue acessar o .saldo e alterar seu valor, mas isso é perigoso pois pode gerar erros. 
 Dessa forma existe uma convenção em JavaScript de indicar que um atributo é privado, colocando um _ antes de seu nome, porém isso não impede de que o atributo seja acessado fora da classe.
@@ -47,9 +47,9 @@ ai já cai no this._saldo += valor, que é a execução de depositar que ele que
 
 É comum ver sem a chaves do if também, pois é um comando de uma linha dentro dele *editei no código*
 
-**Aula 3 - Modularizando Código**
+## 3.  **Aula 3 - Modularizando Código**
 
-    - Video: Modulos Javascript:
+   **- Video: Modulos Javascript:**
         - Boa prática: separar cada classe por arquivo. 
         - Nome de arquivo começando com letra maiuscula indica que é uma classe. 
         - Compartilhamento de código entre arquivos: modulos
@@ -63,7 +63,7 @@ ai já cai no this._saldo += valor, que é a execução de depositar que ele que
         Para que serve a criação de módulos no JavaScript?
         Criamos módulos para compartilhar código entre os diferentes arquivos do meu sistema, ajudando na organização dele.  Dentro do JS cada arquivo é considerado um módulo e podemos escolher o que queremos exportar ou não a partir dele.
 
-    - Video: Composição de classes: 
+   **- Video: Composição de classes:** 
         - vinculou ContaCorrente com Cliente, colocou como atributo de ContaCorrente a classe Cliente, e no index.js instanciou uma conta Corrente nova, e atribuiu um novo cliente a ela: 
             const conta2 = new ContaCorrente();
             conta2.cliente = cliente2
@@ -71,7 +71,7 @@ ai já cai no this._saldo += valor, que é a execução de depositar que ele que
         - novo metodo em ContaCorrente: transferir()
         - passando por parametro para esse metodo uma outra conta instanciada (ou seja um objeto), sendo possivel acessar o metodo dela para realizar a transferencia. Uma forma bem simples de utilizar as classes e objetos. 
     
-    -Video: Tipo de valor e tipo de referência: 
+    **- Video: Tipo de valor e tipo de referência:** 
         - tomar cuidado, toda vez que passamos um parametro que representa um objeto dentro de um método, a instancia conta corrente para dentro do transferir, se eu fizer alguma alteração dentro do método transferir dentro desse metodo que ele recebeu, vai realmente mudar o objeto original dentro do index
         - Ex: 
             transferir(valor, conta) {
@@ -99,7 +99,59 @@ ai já cai no this._saldo += valor, que é a execução de depositar que ele que
         -por que?
         - valor é tipo primitivo da linguagel, então sempre que a gente passa isso como parametro para dentro de um metodo, estamos passando uma cópia dele.
         Dentro do método estou trabalhando com uma cópia, faço qualquer alteração em valor dentro do escopo do método, que não vai refletir do lado de fora
-        - ao contrario de conta2, que é um objeto, logo não estou passando uma copia da conta2 pra dentro do método, estou passando ela de verdade - falamos que estamos passando uma referencia para esse paramtro conta
+        - ao contrario de conta2, que é um objeto, logo não estou passando uma copia da conta2 pra dentro do método, estou passando ela de verdade - falamos que estamos passando uma referencia para esse parametro conta
+
+## 4.  **Aula 4 - Acessando Atributos privados**
+
+    **Video - Null e undefined**
+
+    -Tomar cuidado ao passar objeto como referencia para outros métodos
+    - pois toda vez que passamos um objeto para um parametro de um método, estamos passando uma referencia e isso te a ver com a maneira que o computador trabalha com a mémoria
+    -toda vez que fazemos a instanciação de um novo objeto de uma classe, falamos para o computador reservar um pedaço de memória que caiba esse molde com essas informações que eu quero colocar aqui.
+
+    Toda vez que instanciamos uma nova ContaCorrente, estamos reservando um espaço na memória para as informações contidas nessa classe, que são agência, cliente e saldo. Da mesma forma, quando instanciamos um Cliente estamos reservando um espaço para as informações "nome" e "cpf".
+    Com esse espaço reservado na memória, o que temos armazenado, por exemplo, em contaCorrenteRicardo, não é o objeto em si, mas sim uma referência ao objeto criado (ao espaço de memória onde as informações podem ser manipuladas). Costumamos chamar de objetos ou instâncias as variáveis que criamos, como cliente1, cliente1, contaCorrenteRicardo e conta2, mas, estritamente falando, se tratam de referências.
+
+    Isso tem algumas implicações. Por exemplo, se cliente2 = new Cliente() nos devolve uma referência para um endereço de memória, sabemos que em conta2.cliente = cliente2 estamos passando essa mesma referência de memória. Isso também significa que podemos substituir essa chamada pela instanciação direta de um novo Cliente.
+
+    const conta2 = new ContaCorrente();
+    conta2.cliente = new Cliente();
+    conta2.agencia = 102;
+
+    Com isso, teremos acesso a conta2.cliente.nome - ou seja, ao tributo nome do objeto atribuído ao atributo cliente do nosso objeto conta2
+
+    podemos ver as alterações feitas no código:
+    conta2.cliente = new Cliente();
+    conta2.cliente.nome = "Alice";
+    conta2.cliente.cpf = 88822233309
+
+    e apagamos
+    //const cliente2 = new Cliente();
+
+    //cliente2.nome = "Alice";
+    //cliente2.cpf = 88822233309;
+
+    Assim aprendemos que, trabalhando com referências, é possível acessarmos diversos níveis de profundidade. Mas o que acontece se comentarmos a linha em que criamos a instância de Cliente? //conta2.cliente = new Cliente();
+    o executarmos, receberemos:
+    conta2.cliente.nome = "Alice"; ^ TypeError: Cannot set property 'nome' of undefined
+    Esse erro indica que é impossível definir a propriedade nome de algo indefinido.
+
+    Inclusive, se pararmos de tentar acessá-lo comentando as linhas em que fazíamos as atribuições indevidas, veremos que o objeto conta2 realmente recebeu o valor padrão undefined no atributo cliente, que não foi inicializado.
+    No terminal recebemos um: ContaCorrente { agencia: 102, cliente: undefined, _saldo: 0 }
+    Também obteremos o mesmo resultado se explicitamente atribuirmos o valor null à propriedade conta2.cliente.
+    const conta2 = new ContaCorrente();
+    conta2.cliente = null;
+    //conta2.cliente.nome = "Alice";
+    //conta2.cliente.cpf = 88822233309;
+    conta2.agencia = 102;
+
+    ContaCorrente { agencia: 102, cliente: null, _saldo: 0 }
+    Ambos os casos significam a mesma coisa, com a diferença do null estar explícito no nosso código (ou seja, é intencional). Se tentarmos acessar uma propriedade de um valor nulo, também receberemos um erro.
+
+    **Resumindo** null a gente que coloca, o undefined a gente toma quando faz algo de errado sem intenção
+
+**Video - Getters e Setters**
+
 
 
 
