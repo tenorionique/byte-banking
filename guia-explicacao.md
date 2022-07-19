@@ -234,3 +234,32 @@ ai já cai no this._saldo += valor, que é a execução de depositar que ele que
 
     - Note que temos bem menos linhas de código, tornando-o mais conciso e legível. Claro, não devemos acreditar que um código menor sempre é bom, mas sim analisar as possibilidades de torná-lo mais sucinto. Existem casos nos quais manter nomes mais extensos e descritivos de variáveis ou códigos com etapas mais explícitas também pode ser vantajoso.
 
+
+ - **Video - Atributos estáticos**
+
+    - O banco quer saber: qual a quantidade de contas que tenho abertas no meu sistema
+    - definimos o numeroDeContas dentro da classe ContaCorrente, e queremos que ele seja inerente à classe como um todo, e não das instâncias individualmente (quer dizer que não quer que numeroDeContas fique contando apenas 1 pois esta apenas referente a aquela instancia criada)). 
+    - Para isso, não poderemos declará-lo da mesma forma que os outros atributos. A ideia é trabalharmos com um atributo estático, do tipo que reflete as alterações em todos os objetos daquela classe. Para isso usaremos a palavra reservada static.
+    - De modo a conseguirmos incrementá-lo no construtor, ao invés da palavra reservada this, que nos concede acesso à instância que chamou o construtor, usaremos a própria classe ContaCorrente.
+    import { Cliente } from "./Cliente.js";
+
+        export class ContaCorrente {
+            static numeroDeContas = 0;
+            agencia;
+            _cliente;
+
+            _saldo = 0;
+
+        //...código omitido
+
+            constructor(agencia, cliente) {
+                this.cliente = cliente;
+                this.agencia = agencia;
+                ContaCorrente.numeroDeContas += 1
+            }
+        //...
+
+    - Com isso, toda vez que o construtor de ContaCorrente for chamado, somaremos 1 ao atributo numeroDeContas da classe ContaCorrente como um todo, e não de um objeto específico
+    - Para obtermos esse valor, precisaremos imprimir ContaCorrente.numeroDeContas:
+        console.log(ContaCorrente.numeroDeContas);   //2
+    - Com isso conseguimos obter o resultado correto. Cada vez que instanciarmos um novo cliente, a variável contadora será incrementada de acordo.

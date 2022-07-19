@@ -13,4 +13,6 @@ let valor = 200
 contaCorrenteRicardo.transferir(valor, conta2)
 
 console.log(contaCorrenteRicardo);
-console.log(conta2.cliente)
+console.log(conta2)
+
+console.log(ContaCorrente.numeroDeContas)
