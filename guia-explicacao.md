@@ -23,6 +23,31 @@ O professor deixou um link
        - Atualmente no Js nenhum atributo ou método é realmente privado. Sim, o JS é uma linguagem de escopo aberto e por isso é possível visualizar qualquer atributo ou propriedade de nossa classe.
 
 - Vídeo: Métodos com retorno:
+    - Clausula de retorn dentro do método
+    - Se eu não der um return dentro do método (colocamos agora um no sacar), quando tentar acessar ele e atribuir a uma variável, ao dar um console.log receberemos um undefined
+    - early return - quando coloco um return no meu método, ele para a execução de tudo que esta abaixo dele, por isso se temos uma verificação de if, o return vem dentro ou abaixo. Mas quando temos muitas condições aninhadas podemos usar a tecnica de early return para facilitar a legibilidade do código
 
+        
+    depositar(valor) {
+        if( valor > 0) {
+            this._saldo += valor;
+        }
+    }
 
+estava assim, então o prof mudou para verificar se o saldo era menor e igual a zero e deu um return dentro do escopo de if sem nenhuma outra instrução, indicando que deve parar de executar e sair de dentro do if
+ai já cai no this._saldo += valor, que é a execução de depositar que ele quer. Em codigos cheios de if isso vai ajudar bastante:
+
+    depositar(valor) {
+        if( valor <= 0) {
+           return;
+        }
+
+        this._saldo += valor;
+    }
+
+É comum ver sem a chaves do if também, pois é um comando de uma linha dentro dele *editei no código*
+
+**Aula 3 - Modularizando Código**
+
+    - Video: Modulos Javascript
 
