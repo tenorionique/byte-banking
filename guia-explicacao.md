@@ -200,4 +200,37 @@ ai já cai no this._saldo += valor, que é a execução de depositar que ele que
 
     Dessa forma temos um encapsulamento melhor da nossa classe, protegendo os atributos mais sensíveis e permitindo acesso somente quando assim o desejamos.
 
+## 5. **Aula 5 - Construtores e estáticos**
+
+- **Video - Construtores**
+
+        Definição: Construtores são utilizados para inicializar os atributos.
+
+    - Na classe Cliente, temos o atributo de CPF, e como cpf é unico pra cada pessoa e não muda, precisamos fazer uma tratativa nesse atributo para ele não ser alterado. 
+    - colocou ele como privado e fez um assessor get para consultar o cpf
+    - mas só quero atribuir esse cpf quando eu CRIAR um novo cliente, e em nenhum outro momento do clico de vida de objeto quero alterar o cpf.  Então vamos utilizar o construtor: constructor() uma função especial
+    -     constructor(nome, cpf){
+        this.nome = nome;
+        this._cpf = cpf;
+    }
+
+    - voltando ao index, na hora de criar o meu cliente repare que tem um new Cliente(), e esse () é a chamada de uma função, e justamente chama o nosso construct da nossa classe (antes de ter o construct, acontecia que gerava um construtor implicito que não fazia "nada" só reservava um espaço na memoria) e precisavamos atribuir valor para os atributos 
+    - Passamos o nome e o cpf por parametro dentro do new Cliente("Ricardo",11122233309)
+    E eliminamos essas duas linhas 
+    cliente1.nome = "Ricardo";
+    cliente1.cpf = 11122233309;
+
+    - gerenciamento de estado: Assim conseguimos com que nossa propriedade seja atribuída somente em tempo de construtor, e que não seja mais possível alterá-la enquanto tal objeto existir. Essa é mais uma forma de controlarmos os estados da nossa aplicação. Todos os atributos que temos em nossas classe são chamados também de "estado da classe", e é comum nos referirmos às suas regras de alteração como "gerenciamento de estado" - ou seja, as técnicas que utilizamos para lidar com esses atributos.
+
+    - Agora em ContaCorrente criamos um construtor:
+            
+        constructor(cliente, agencia) {
+            this.agencia = agencia;
+            this.cliente = cliente;
+        }
+
+     repare que esta utilizando o metodo assessor (get cliente) dentro do constructor, pois esta fazendo aquela verificação do if (dentro do set tem um if(novoValor instanceof Cliente) pra garantir que os clientes criados sejam objetos instancias da classe Cliente)
+    -Resumindo: no meu constructor posso usuar os métodos assessores que tem dentro da classe
+
+    - Note que temos bem menos linhas de código, tornando-o mais conciso e legível. Claro, não devemos acreditar que um código menor sempre é bom, mas sim analisar as possibilidades de torná-lo mais sucinto. Existem casos nos quais manter nomes mais extensos e descritivos de variáveis ou códigos com etapas mais explícitas também pode ser vantajoso.
 
