@@ -18,7 +18,8 @@ const conta2 = new ContaCorrente();
 conta2.cliente = cliente2;
 conta2.agencia = 1002;
 
-contaCorrenteRicardo.transferir(200, conta2)
+let valor = 200
+contaCorrenteRicardo.transferir(valor, conta2)
 
 console.log(contaCorrenteRicardo);
 console.log(conta2)

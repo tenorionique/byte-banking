@@ -69,6 +69,37 @@ ai já cai no this._saldo += valor, que é a execução de depositar que ele que
             conta2.cliente = cliente2
             conta2.agencia = 1002
         - novo metodo em ContaCorrente: transferir()
-        - passando por parametro para esse metodo uma outra conta instanciada, sendo possivel acessar o metodo dela para realizar a transferencia. Uma forma bem simples de utilizar as classes e objetos. 
-        
-            
+        - passando por parametro para esse metodo uma outra conta instanciada (ou seja um objeto), sendo possivel acessar o metodo dela para realizar a transferencia. Uma forma bem simples de utilizar as classes e objetos. 
+    
+    -Video: Tipo de valor e tipo de referência: 
+        - tomar cuidado, toda vez que passamos um parametro que representa um objeto dentro de um método, a instancia conta corrente para dentro do transferir, se eu fizer alguma alteração dentro do método transferir dentro desse metodo que ele recebeu, vai realmente mudar o objeto original dentro do index
+        - Ex: 
+            transferir(valor, conta) {
+                conta.cidade= "São Paulo"
+                const valorSacado = this.sacar(valor);
+                conta.depositar(valorSacado)
+            }
+        - vou adicionar dinamicamente um atributo ao objeto conta! Ou seja, alterou o objeto. 
+
+        Agora se eu fizer isso: na classe
+            transferir(valor, conta) {
+                conta.cidade= "São Paulo"
+                const valorSacado = this.sacar(valor);
+                conta.depositar(valorSacado)
+                valor = 20;
+            }
+
+        E no index fizer isso:
+        let valor = 200
+        contaCorrenteRicardo.transferir(valor, conta2)
+        - não passamos a quantidade que vai transferir como um numero, escrevemos uma variavel e colocamos essa quantidade 200 lá dentro (o valor da variavel valor kk), fez isso pra passar valor e conta como variaveis e demonstrar o exemplo:
+        - se eu der um console.log em valor, e em conta2:
+        - vejo que valor não foi alterado, continua 200
+        -mas a conta2 foi alterada dinamicamente com a cidade 'são paulo'
+        -por que?
+        - valor é tipo primitivo da linguagel, então sempre que a gente passa isso como parametro para dentro de um metodo, estamos passando uma cópia dele.
+        Dentro do método estou trabalhando com uma cópia, faço qualquer alteração em valor dentro do escopo do método, que não vai refletir do lado de fora
+        - ao contrario de conta2, que é um objeto, logo não estou passando uma copia da conta2 pra dentro do método, estou passando ela de verdade - falamos que estamos passando uma referencia para esse paramtro conta
+
+
+
