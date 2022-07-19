@@ -49,5 +49,12 @@ ai já cai no this._saldo += valor, que é a execução de depositar que ele que
 
 **Aula 3 - Modularizando Código**
 
-    - Video: Modulos Javascript
+    - Video: Modulos Javascript:
+        - Boa prática: separar cada classe por arquivo. 
+        - Nome de arquivo começando com letra maiuscula indica que é uma classe. 
+        - Compartilhamento de código entre arquivos: modulos
+        - exportar a classe: export
+        - importar a classe no arquivo que a esta utilizando.
+        - colocar a extensão do arquivo .js no import pra ele funcionar. 
+        - Não estava funcionando apenas rodar no terminal como um node ./index.js pois ele não estava interpretando o module, ou seja, o meu index.js é só um script mas pra ele rodar no node agora e ler os modulos classe, precisa ser um module também. Então fez um npm init para iniciar um pacote - package.json e deu um   "type": "module" (linha 15 do arquivo)
 

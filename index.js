@@ -1,22 +1,5 @@
-class Cliente {
-    nome;
-    cpf;
-}
-class ContaCorrente {
-    agencia;
-    _saldo = 0; //_ quer dizer privado, pra evitar que o saldo seja mexido fora dessa classe
-    sacar(valor) {
-        if(this._saldo >= valor) {
-            this._saldo -= valor;
-            return valor;
-        }
-    } //_ é uma convenção, ele não esta privado realmente
-    
-    depositar(valor) {
-        if( valor <= 0) return;
-        this._saldo += valor;
-    }
-}
+import { Cliente } from "./Cliente.js"
+import { ContaCorrente } from "./ContaCorrente.js"
 
 const cliente1 = new Cliente();
 cliente1.nome = "Ricardo";
@@ -27,7 +10,6 @@ cliente2.nome = "Alice";
 cliente2.cpf = "88822233309";
 
 const contaCorrenteRicardo = new ContaCorrente()
-//contaCorrenteRicardo.saldo = 0;
 contaCorrenteRicardo.agencia = 1001;
 
 
