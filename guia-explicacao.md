@@ -58,3 +58,17 @@ ai já cai no this._saldo += valor, que é a execução de depositar que ele que
         - colocar a extensão do arquivo .js no import pra ele funcionar. 
         - Não estava funcionando apenas rodar no terminal como um node ./index.js pois ele não estava interpretando o module, ou seja, o meu index.js é só um script mas pra ele rodar no node agora e ler os modulos classe, precisa ser um module também. Então fez um npm init para iniciar um pacote - package.json e deu um   "type": "module" (linha 15 do arquivo)
 
+    - Exercicio: Organizando código:    
+        A organização de um projeto de programação é algo muito importante para que conforme o sistema crescer encontrarmos mais facilmente as classes e lugares que queremos alterar.
+        Para que serve a criação de módulos no JavaScript?
+        Criamos módulos para compartilhar código entre os diferentes arquivos do meu sistema, ajudando na organização dele.  Dentro do JS cada arquivo é considerado um módulo e podemos escolher o que queremos exportar ou não a partir dele.
+
+    - Video: Composição de classes: 
+        - vinculou ContaCorrente com Cliente, colocou como atributo de ContaCorrente a classe Cliente, e no index.js instanciou uma conta Corrente nova, e atribuiu um novo cliente a ela: 
+            const conta2 = new ContaCorrente();
+            conta2.cliente = cliente2
+            conta2.agencia = 1002
+        - novo metodo em ContaCorrente: transferir()
+        - passando por parametro para esse metodo uma outra conta instanciada, sendo possivel acessar o metodo dela para realizar a transferencia. Uma forma bem simples de utilizar as classes e objetos. 
+        
+            
