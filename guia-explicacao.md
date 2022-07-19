@@ -150,8 +150,54 @@ ai já cai no this._saldo += valor, que é a execução de depositar que ele que
 
     **Resumindo** null a gente que coloca, o undefined a gente toma quando faz algo de errado sem intenção
 
-**Video - Getters e Setters**
+**Video - Getters e Setters - Encapsulamento**
 
+    - Fizemos anteriormente que é possivel passar um objeto diretamente para uma propriedade de outro objeto, ja que ele é uma referencia a uma instancia de uma classe. 
+    Também aprendemos que é possível passar qualquer valor para essa propriedade, como null ou mesmo 0
+    **É uma boa prática mantermos a inicialização do objeto em uma variável, já que iremos popular seus atributos - por exemplo de cliente2 - antes de utilizá-lo como atributo de outro objeto.** 
 
+    Ou seja, voltamos:
+    const cliente2 = new Cliente();
+    cliente2.nome = "Alice";
+    cliente2.cpf = 88822233309;
+
+    Como proteger um atributo para ninguem mexer nele erroneamente e eu tomar um undefined algum dia?
+    colocar ele como privado! _nomedoatributo. Vamos fazer isso com o atributo cliente.
+
+     Pensando nisso, o JavaScript possui uma sintaxe especial para casos em que temos um atributo privado e precisaremos dar acesso a ele de maneira controlada, os chamados métodos assessores.
+
+     - Para conseguir acessar um atributo privado e mostrar sua informação preciso ter escrito um getter, um método acessor de outra forma o console me retornaria um undefined
+
+     - Para conseguir setar algum valor para um atributo privado, preciso ter escrito um setter, um método acessor. 
+
+     *Para um getter a palavra reservada é um get e o nome do método acessor sera o nome do atributo sem o _ na frente
+     Para um setter a palavra reservada é um set e o nome do método acessor sera o nome do atributo sem o _ na frente*
+
+     O assessor set, diferente de um método, possui uma característica especial, permitindo que façamos a atribuição de valores normalmente com uma igualdade, sem utilizarmos a sintaxe dos outros métodos (nesse caso, algo como conta2.cliente()).
+
+     Como queremos proteger nosso atributo privado, podemos incluir uma condicional definindo que a atribuição de novoValor só será feita se ele for uma instância de cliente, algo que conseguimos verificar usando o operador instanceof. Nesse ponto precisaremos fazer a importação da classe Cliente como aprendemos nas aulas anteriores.
+
+      set cliente(novoValor) {
+        if (novoValor instanceof Cliente) {
+            this._cliente = novoValor;
+        }
+    
+    se no index.js eu colocar conta2.cliente = 0;
+    recebo:
+    ContaCorrente { agencia: 102, _cliente: undefined, _saldo: 0 }
+    Ou seja, a verificação não passou e o valor 0 não foi atribuído, recebendo um valor padrão. Se passarmos uma instância de Cliente, como cliente1, tudo ocorrerá como deveria.
+
+    Os assessores são muito poderosos, pois nos concedem acesso a propriedades privadas ao mesmo tempo em que nos permitem definir uma regra de proteção dentro deles. Já se for necessário pegar o valor de _cliente, precisaremos de um novo assessor, dessa vez do tipo get. Ele também será semelhante a um método, mas nesse caso simplesmente retornaremos o valor de this._cliente.
+
+     Já no caso do atributo _saldo, que também é privado, podemos manipulá-lo por meio dos métodos sacar() e depositar(), mas ainda não temos algo que nos retorne seu valor atual para o exibirmos em uma interface gráfica. Nessa situação, precisaremos somente do assessor do tipo get, que criaremos da mesma forma que o anterior, simplesmente retornando this._saldo.
+
+      get saldo() {
+        return this._saldo;
+    }
+
+    Após essa alteração, conseguiremos receber o valor de conta2.saldo com um console.log().
+    Entretanto, se tentarmos fazer uma atribuição direta, receberemos um erro informando que não é possível atribuir um valor à propriedade saldo, já que ela só possui um método assessor de leitura (tipo get).
+
+    Dessa forma temos um encapsulamento melhor da nossa classe, protegendo os atributos mais sensíveis e permitindo acesso somente quando assim o desejamos.
 
 
