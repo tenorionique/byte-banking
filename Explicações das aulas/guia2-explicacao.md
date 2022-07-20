@@ -1,8 +1,8 @@
-## 1. Conhecendo o problema do cliente
+# 1. Conhecendo o problema do cliente
 
 - Essa é o guia de explicação de cada video e exercicio do curso JavaScript: Interfaces e Heranças em Orientação a Objetos, utilizando o projeto byte-bank, iniciado no curso anterior a esse. 
 
-# 1.1 Relembrando o projeto
+## 1.1 Relembrando o projeto
 
 - O cliente banco agora quer que a conta tenha opções, conta poupança contendo saldo, saber quem é o cliente, quem é a agencia
 - Explicou que por boa pratica, e mostrou o site do MD sobre classes, que propriedades de instâncias devem ser definidas dentro dos métodos da classe:
@@ -17,7 +17,7 @@
 - Ficamos com um código duplicado em ContaCorrente e ContaPoupança, e isso não é legal! Como arrumar isso?
     (talvez eu tenha esquecido de copiar o código de contacorrente e colar em contapoupança igual o professor, ele copiou todos os metodos de um no outro, foi isso que ficou duplicado)
     
-# 1.2 Compartilhando código
+## 1.2 Compartilhando código
 
 -  Pra remover o código duplicado, vai crir um arquivo com uma classe Conta, com a base do código que é utilizada entre as outras duas classes.
 - Agora no index não instanciamos mais new ContaCorrente() ou new ContaPoupança(), apenas new Conta();
@@ -25,9 +25,9 @@
 - Segundo problema, agora no meu console.log não sei mais distinguir qual conta é corrente ou poupança pois elas vem com um nome só Conta
 - Esses são problemas gerados por códigos extremamente compartilhados
 
-## 2. Herança
+# 2. Herança
 
-# 2.2 Herança (vídeo)
+## 2.2 Herança (vídeo)
 
 - Colocou os setters e getters que estavam dentro da contacorrente para a conta
 - Quer que a classe Conta Corrente tenha uma maneira diferente de sacar, atualmente tem uma taxa lá no código mas que era pra ser apenas para Conta Poupança. 
@@ -59,12 +59,12 @@
 - Sempre atentar na ordem que os parametros estão sendo passados pra não receber erros no objeto. 
 - Mesma coisa foi feita para ContaPoupança 
 
-# 2.3Exercicio**
+## 2.3Exercicio
 - Qual a sintaxe do JavaScript para herdarmos de uma classe?
 - class Carro extends Veiculo
 - dessa forma a classe carro herda as propriedades e métodos da classe Veículo
 
-# 2.4 Super e sobrescrita
+## 2.4 Super e sobrescrita
 
 - Relembrando: o super() faz uma referencia a classe que estamos extendendo, a classe Mãe. No exemplo anterior o super() estava recebendo o constructor da classe Mãe Conta. 
 - Consigo chamar  metodos com o super também. 
@@ -96,11 +96,63 @@
   - Podemos resolver o problema da regra da taxa de saque pra cada tipo de conta, agora! 
   - Chamei o metodo sacar() na ContaCorrente, e mudei a regra da taxa para 1.1, então toda vez que eu saco em uma contaCorrente, meu saldo total vai ser saldo = saldoatual - (saque+taxa). Assim sobrescrevemos o sacar(), colocamos outro comportamento nele. 
 
+## 2.5 Exercício
 
+Douglas começou a testar o que aprendeu com herança e escreveu o código abaixo:
+    class Funcionario{
+        getBonificacao(){
+            return 100;
+        }
+    }
+    class Diretor extends Funcionario{
+        getBonificacao(){
+            return 200;
+        }
+    }
+    class DiretorTI extends Diretor{
 
+    }
 
-## 3. Classes Abstratas
+O problema é que quando ele instanciou um DiretorTI e chamou o método GetBonificacao ele recebeu o valor de 200 e não de 100 como ele esperava. Por que isso aconteceu?
 
-## 4. Sistema Interno
+- Só acontece porque a classe DiretorTI não sobrescreveu o método getBonificacao: Sim, se ele sobrescrever esse método a classe funcionará da maneira que ele espera. Porém esse código estará sendo sobrescrito em todas as camadas da hierarquia de classes. Será que é uma boa opção?
+- Isso acontece porque a classe DiretorTI herda da classe Diretor e ela está sobrescrevendo o método getBonificacao da classe `Funcionário.: Isso mesmo! Com a herança podemos herdar classes que herdam de outras classes. E conforme essa cadeia cresce a complexidade do código tbm cresce. Por isso é considerada uma má prática criarmos árvores de herança muito profundas.
 
-## 5. Interfaces e DuckType
+## 2.6 Privado e Protegido
+
+- Vimos que podemos sobrescrever comportamentos na nossa classe Mãe, chamamos o nomedometodo () {// codico com comportamento que sobrescrever sem chamar super nenhuma }
+- E pra chamar o comportamento padrão da classe mãe, chamamos  nomedometodo { super.nomedometodo() }
+- Mas se olharmos o que fizemos, ainda temos uma repetição de código entre ContaCorrente e Conta, pois no método sacar, a unica linha que difere os dois é a let taxa = 1.1 e no outro let taxa = 1. Como resolver esse problema?
+-  Na Conta, vou criar um método privado _sacar(), lembrando que sacar e _sacar não sao a mesma coisa
+-  Copio o código para _sacar():
+        const valorSacado = taxa * valor
+        if(this._saldo >= valorSacado) {
+            this._saldo -= valorSacado;
+            return valorSacado;
+        }
+        return 0 //código acrescentado para caso não entre no if
+
+- Sem esquecer os parametros de _sacar(valor, taxa)
+- Agora vou em sacar(valor) retiro o codigo duplicado que ja esta em _sacar, fico apenas com taxa e escrevo this._sacar(valor, taxa), ficou assim:
+
+        sacar(valor) {
+            let taxa = 1
+            return this._sacar(valor, taxa)      
+
+    }
+- Dessa forma temos um método sacar que é publico, consumindo um método privado passando pra ele os valores que a gente precisa. 
+- e vamos retornar em sacar, o que o metodo _sacar nos retorna. Então quem chamar sacar, tem o retorno de _sacar, um publico usando um privado. Em vez de ter tudo junto e precisar duplicar código. 
+
+- Mas se _sacar é privado, poderemos utilizar ele na ContaCorrente, os metodos e atributos privados não deveriam ficar apenas dentro de sua classe? Nesse caso como estamos trabalhando com heranças, podemos utilizar o método privado lá na classe filha.
+- Então nossa classe ContaCorrente vai ficar: 
+    sacar(valor) {
+        let taxa = 1.1      
+        return this._sacar(valor, taxa);
+    }
+    - Não estamos sobrescrevendo o método, então poderiamos utilizar o return super.sacar()
+    - Dessa forma não temos mais a duplicação de código, pois uma parte foi abstraida para uma metodo privado.
+# 3. Classes Abstratas
+
+# 4. Sistema Interno
+
+# 5. Interfaces e DuckType
