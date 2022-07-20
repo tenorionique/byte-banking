@@ -32,7 +32,7 @@ export class ContaCorrente {
     } //_ é uma convenção, ele não esta privado realmente
     
     depositar(valor) {
-        if( valor <= 0) return;
+        if( valor <= 100) return;
         this._saldo += valor;
     }
 
