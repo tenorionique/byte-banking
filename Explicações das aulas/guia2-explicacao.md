@@ -153,6 +153,26 @@ O problema é que quando ele instanciou um DiretorTI e chamou o método GetBonif
     - Dessa forma não temos mais a duplicação de código, pois uma parte foi abstraida para uma metodo privado.
 # 3. Classes Abstratas
 
+## 3.1 Propriedade constructor
+
+- Agora temos três classes: Conta, ContaCorrente, ContaPoupança. Mas nossa classe Conta não conversa com a gente exatamente do jeito que o byte bank quer, ela não me diz muita coisa. Ela foi criada para ser herdada, para depois termos a especialização dela.Então não faz sentido instanciar Conta no nosso projeto. Mas do jeito que esta agora, qualquer um pode chegar e instancia-la. Como resolver isso, previnir que isso aconteça?
+
+- Toda vez que alguém tentar dar um new Conta eu quero bloquear, eu não quero fazer isso acontecer. Ou pelo menos, inicialmente, eu quero dar um aviso.
+- O que eu vou fazer? Vou vir no Conta.js e vou falar, if(this.constructor == Conta), se o meu construtor for do tipo Conta, eu vou dar um console.log e falar "Você não deveria instanciar um objeto do tipo conta"
+-  E aqui eu estou falando this.constructor porque ele salva quem foi o construtor inicialmente chamado
+    export class Conta {
+        constructor(saldoInicial, cliente, agencia) {
+            this._saldo = saldoInicial;
+            this._cliente = cliente;
+            this._agencia = agencia;
+            if(this.constructor == Conta) {
+                console.log("Você não deveria instanciar um objeto do tipo conta")
+            }
+        }
+- O console.log(this.constructor) podemos ver que o construtor, foi chamado através de uma classe filha ou uma classe mãe, então se ele for chamado pela classe mãe Conta por isso o if(this.constructor == Conta). Aí joga a mensagem no console.
+
+
+
 # 4. Sistema Interno
 
 # 5. Interfaces e DuckType
