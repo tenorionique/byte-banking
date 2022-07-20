@@ -64,7 +64,7 @@
 - class Carro extends Veiculo
 - dessa forma a classe carro herda as propriedades e métodos da classe Veículo
 
-## 2.4 Super e sobrescrita
+## 2.4 Super e sobrescrita **é poliformismo**
 
 - Relembrando: o super() faz uma referencia a classe que estamos extendendo, a classe Mãe. No exemplo anterior o super() estava recebendo o constructor da classe Mãe Conta. 
 - Consigo chamar  metodos com o super também. 
@@ -171,8 +171,62 @@ O problema é que quando ele instanciou um DiretorTI e chamou o método GetBonif
         }
 - O console.log(this.constructor) podemos ver que o construtor, foi chamado através de uma classe filha ou uma classe mãe, então se ele for chamado pela classe mãe Conta por isso o if(this.constructor == Conta). Aí joga a mensagem no console.
 
+## 3.2 Classes Abstratas
+- O que fizemos anteriormente só nos gera um aviso, e o dev pode muito bem ignora-lo, então nosso problema ainda persiste de ser possivel instanciar a classe Conta;
+- console é uma classe e ao dar ctrl + space no console. podemos ver o autocomplete e varios metodos dessa classe, sendo um deles o .error() mas só utilizando isso, também não estoura um erro no terminal igual quando apagamos uma info importante e tomamos um 'referenceError' ou alguma outra.
+- Maneira mais certa de arrumar isso: 
+    export class Conta {
+        constructor(saldoInicial, cliente, agencia) {
+            if(this.constructor == Conta) {
+            throw new Error("Você não deveria instanciar um objeto do tipo Conta diretamente") 
+            }
+            this._saldo = saldoInicial;
+            this._cliente = cliente;
+            this._agencia = agencia;
+    }
 
+- Colocamos a verificação antes das chamadas dos this.
+- E dentro do escopo do if: ao invés de dar um console.error, eu vou criar um novo erro. Aqui eu vou lançar, então vou dar um throw, nós vamos lançar um novo erro para o meu programa, eu vou lançar um novo, new Error. E nós temos uma classe chamada Error, que é a classe padrão do JavaScript para usarmos quando queremos lançar erros.
+- por enquanto, se quisermos parar a execução do nosso programa em algum ponto, podemos dar um throw em um novo objeto do tipo erro.
+- Inclusive, esse tipo de classe que é pensada para não ser instanciada diretamente, como a nossa Conta, é normalmente chamada de **classe abstrata**, é uma classe que não pode ser instanciada. Então, vou escrever um comentário "//Classe abstrata" no início do código de Conta.
+    -  Ela só funciona para ser herdada, **uma classe abstrata nunca pode ser construída diretamente, nunca podemos dar um new nela, nunca vai ter uma instância dessa própria classe**, mas ela **pode ser herdada**, assim como temos nossa ContaCorrente que herda daquela classe abstrata chamada Conta.
 
+## 4.3 Exericio - Design de código
+
+Júlia está criando um código para a empresa de sua mãe e ela precisa cadastrar os funcionários da empresa. Com isso ela criou o seguinte código:
+
+    class Funcionario {
+        constructor(nome, cpf, salario) {
+            this.nome = nome;
+            this.cpf = cpf;
+            this._salario = salario;
+            this._bonificacao;
+        }
+        }
+
+        class Gerente extends Funcionario {
+        constructor(nome, cpf) {
+            super(nome, cpf, 2400);
+            this._bonificacao = 1.2;
+        }
+        }
+
+        class Assistente extends Funcionario {
+        constructor(nome, cpf) {
+            super(nome, cpf, 1200);
+            this._bonificacao = 0.9;
+        }
+    }
+
+Com essas classes ela tem uma maneira de saber quem são os funcionários dentro da empresa dos seus pais. Porém existem alguns cargos dentro da empresa que só existe um funcionário preenchendo eles. Por isso Júlia decidiu não criar classes filhas e usar diretamente a classe Funcionário para identificar esses cargos.
+Qual o problema com essa decisão?
+ - Ela terá um grande trabalho no futuro quando quiser adicionar uma classe para um tipo de funcionário que atualmente está sendo representado pela classe funcionário. Além da quantidade de trabalho ser grande ela corre o risco de esquecer de alterar algum lugar que atualmente usa a representação de funcionário.,
+ - Um dos problemas é que ela perde a informação de qual tipo de funcionário ela tem. Como ela está usando uma classe mais genérica ao invés de criar classes especificas ela não distingue cada tipo de funcionário.: 
+ Exatamente! Ao desenvolvermos um sistema as classes mais abstratas e genéricas nos ajudam a delimitar os contextos de negócio que estamos trabalhando, mas as classes concretas e especificas nos dão informações mais granulares. Sempre é bom ter a quantidade certa de cada tipo de classe
+
+## 4.4 Métodos Abstratos
+
+    
 # 4. Sistema Interno
 
 # 5. Interfaces e DuckType
