@@ -226,7 +226,16 @@ Qual o problema com essa decisão?
 
 ## 4.4 Métodos Abstratos
 
-    
+- no byte-bank toda conta vai ter alguma taxa para um saque, o que muda o valor da taxa é o tipo da conta
+- o byte bank quer implementar o saque dentro de ContaPoupança, com taxa de 2%
+- então vamos chamar o metodo sacar la também
+- criamos conta salario, e teremos agora uma taxa diferente
+- todas as minhas classes que herdam de conta são especializações, faz sentido ter um método sacar() la dentro que tenha comportamento de saque, com uma taxa fixa? sendo que todas as minhas herdeiras precisam ter taxas diferentes? Logo se eu esquecer de sobrescrever o método, ele vai vir com o método escrito na classe Mãe, e vai ser a taxa errada...
+- Assim como a classe não é feita para ser instanciada diretamente, o método sacar() não é feito para ser chamado diretamente, ele tem que ser sempre sobrescrito. Então ele é o que chamamos de método abstrato, é um método que não é feito para ser chamado diretamente, ele é feito para ser sempre sobrescrito, então deixarei um comentário indicando que ele é "//Método abstrato".
+- Porque assim nós conseguimos garantir que todas as implementações que herdam de Conta vão ter que implementar esse método sacar e elas vão ter que saber como elas têm que chamar esse método, como elas vão ter que manipulá-lo para ter uma taxa para saber das informações de como uma conta tem que fazer seu saque ou não.
+-  A conta tem o método sacar, esse método existe, porque nós queremos definir que toda conta vai ter o método sacar, mas ele não vai ter nada. E se ele não vai ter nada, se alguém esquecer, por acaso, de chamá-lo, eu tenho que lançar um erro. Da mesma maneira que lançamos um erro quando tentamos construir diretamente uma classe abstrata, podemos lançar um erro quanto tentarmos chamar o método abstrato.
+- Então, na Conta, no meu método sacar() eu vou também lançar um novo erro, e a mensagem desse erro vai ser: "O método Sacar da conta é abstrato". Se ele é abstrato, alguém esqueceu de chamá-lo. Se eu fizer isso agora e pedirmos para limpar o nosso terminal e para executar de novo, vamos vir aqui no terminal, agora sim ele deu um erro, falando que ele para justamente onde lançamos o erro e ele fala: "O método Sacar da conta é abstrato".
+
 # 4. Sistema Interno
 
 # 5. Interfaces e DuckType
