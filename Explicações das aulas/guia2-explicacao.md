@@ -415,3 +415,109 @@ Acontece que na hora que ele executa o código o único que aparece no console d
 R: Isso acontece pois a propriedade saldo não está definida dentro do objeto conta e por isso retorna undefined.: Correto, por padrão o JS adiciona como undefined no objeto uma propriedade que tentamos acessar caso ela não exista.
 
 # 5. Interfaces e DuckType
+
+## 5.1 Verificando propriedades e tipos
+
+- Recapitulando: Da maneira que temos agora nosso sistema de autenticação, vamos tomar erros quando não passarmos alguém que for autenticável para esse sistema.
+Não tem o metodo autenticar na classe Cliente. 
+
+- E dessa maneira nós vamos sempre tomar um erro quando receber aqui um objeto que não seja autenticável, ou seja, que não tenha uma interface que esperamos.
+
+- **Como falamos, podemos tratar diferentes objetos de uma maneira similar, usando polimorfismo, então todo diretor, gerente, todo funcionário e cliente podem ser tratados da mesma maneira, desde que eles tenham uma interface padrão, uma maneira de comunicarmos e manuseá-los, que seja comum entre todos eles.**
+
+- No nosso caso, para o nosso sistema de autenticação, tem que ser esse método autenticar para essa nossa interface padrão e todos esses objetos, todos eles têm que ter essa interface para que consigamos usá-los.
+
+- E como verificamos se um deles não tem? Ou se quando recebemos, alguém que seja autenticável tenha ou não esse método que nós esperamos? Vamos ter que criar um novo método aqui no SistemaAutenticacao, uma nova camada de proteção, e faremos isso com o if.
+
+- fazendo o if eu vou falar que se no meu SistemaAutenticacao tiver um método ehAutenticavel, e esse método vai receber o nosso objeto autenticavel, que estamos supondo que é, e ele vai me retornar verdadeiro ou falso.
+
+- E se ele for autenticável eu vou entrar no if, então eu vou tentar chamar o método autenticar, porque eu sei que esse método existe, eu já fiz uma camada de verificação aqui. Se ele não entrar nesse if quer dizer que ele não é, se ele não é autenticável, ele não vai logar no meu sistema, então eu vou, por padrão, retornar false.
+
+    export class SistemaAutenticacao{
+        static login(autenticavel, senha){
+            if(SistemaAutenticacao.ehAutenticavel(autenticavel)){
+                return autenticavel.autenticar(senha);
+            }
+            return false;
+        }
+    }
+
+-  ehAutenticavel vai ser um método que eu vou criar e vai ser um método estático.
+- Criando um método static, pra não precisar criar uma instancia. só chamar o ehAutenticavel e acessa-lo tipo no index se precisar: 
+    - Da mesma maneira que eu estou fazendo com meu SistemaAutenticacao com o método login, eu não precisei criar uma instância para chamar esse método, eu só falo que ele pertence ao sistema de autenticação e o chamo direto, porque ele é um método estático.
+
+-  Método static ehAutenticavel, ele vai receber alguém que seja autenticavel, e o que eu quero saber é se existe o método autenticar() dentro desse objeto. Como faremos isso?
+    - Eu preciso saber um pouco, para fazer isso, como o JavaScript guarda os valores de objetos quando os criamos, porque até agora trabalhamos com classes, então definimos aqui os moldes que queremos que um objeto tenha.
+    - E quando criamos um novo objeto o JavaScript reserva um espaço de memória onde ele vai guardar todos os atributos e propriedades daquele objeto.
+    - E ele faz isso através de um sistema de chave e valor. Para cada propriedade que colocamos aqui na classe Funcionário, por exemplo, _nome, _salario, _cpf, ele vai guardar isso como sendo uma chave para um endereço de memória, onde ele vai ter o nosso CPF, o nosso salário, o nosso nome, onde vamos realmente ter a informação.
+    -  E quando ele vai acessar uma classe, quando o JavaScript vem aqui e nós pedimos para ele: chama o método autenticar(), ele vai pegar esse método autenticar() e reconhecer como uma chave.
+    - Ele vai pegar o objeto autenticavel, vai na memória do computador e fala: autenticar está me apontando para esse endereço de memória, então eu vou ter que pegar o que está nesse endereço de memória e executar. E ele trabalha nesse sistema de chave e valor.
+    - Como ele está guardando as chaves dentro da memória do computador, podemos verificar se uma chave existe dentro desse objeto que estamos trabalhando. E para fazer isso, no SistemaAutenticacao, eu procuro pelo nome da chave,“autenticar”, que é o nome do nosso método, se essa chave existe dentro do objeto, então in autenticavel.
+    - Essa palavra-chave ou operador in vai verificar se essa chave autenticar existe dentro desse objeto autenticavel. Se isso for verdade, ele vai me retornar verdadeiro, então eu posso dar um return. Vou retornar o que esse ”autenticar” in autenticavel me retornar.
+
+            static ehAutenticavel(autenticavel){
+                return "autenticar" in autenticavel
+            }
+    - Dessa forma, se tentarmos executar agora o nosso código, vamos limpar o nosso console e executar de novo, podemos ver que ele retornou falso, ou seja, eu não tive aquele erro.
+
+-  Mas se eu estou procurando só com uma chave e não estou verificando se é uma função, se eu tiver uma chave .autenticar no meu Cliente.js, então this.autenticar e eu falar que essa chave é igual a 1, ele vai ter a chave. O que será que vai acontecer agora?
+    - Se eu vier aqui no terminal, limpar e executar de novo, podemos ver que ele também deu um erro, continua dando aquele “TypeError” de autenticar não é uma função, porque a chave agora existe no cliente, eu criei uma chave autenticar e dei o valor de 1 para ela.
+    - Só que quando meu sistema de autenticação procura a chave autenticar, ele está procurando uma função, porque ele está executando essa função, e para executar essa função elas têm que ser do tipo de uma função.
+    -  Aqui no SistemaAutenticacao eu tenho que fazer uma segunda verificação, eu tenho que verificar se o autenticar existe dentro do meu autenticavel, e vou pôr o meu operador &&, e se o meu autenticavel.autenticar é do tipo de uma função, se ele é uma instância de uma função, ele é um instanceof de função.
+    -  essa chave que eu estou procurando tem que estar dentro do objeto e ela tem que ter uma instância de uma função.
+
+        static ehAutenticavel(autenticavel){
+            return "autenticar" in autenticavel &&
+            autenticavel.autenticar instanceof Function
+        }
+
+- Então um método, quando está dentro de um objeto, também é um objeto, é um objeto dentro do outro, por isso que nós colocamos uma função que é um construtor de função, é uma maneira de chamarmos os nossos métodos.
+- Todo método dentro de um objeto, todo método que temos, autenticar(), cadastrarSenha(), sacar(), depositar(), que nós criamos, são instâncias de uma função. E temos só essa maneira sintática de criá-los, de uma maneira fácil, sem ficar dando new toda hora que criarmos uma função dentro de um objeto.
+-  E se eu limpar meu console e executar, de novo, ele não vai conseguir logar, porque existe a chave autenticar, mas ela não é uma função, ela não é um método que eu posso chamar.
+- E se eu tiver no meu Cliente.js, ao invés dessa chave dessa maneira this.autenticar, uma função, de fato, vamos criar o nosso autenticar(), e ele vai ser uma função, eu vou retorná-lo como true, aí sim eu vou ter o meu login sendo feito com sucesso, então eu consigo autenticar, porque agora eu sei que meu sistema de autenticação recebeu alguém que é autenticável de verdade.
+- Essa é uma maneira que conseguimos precaver alguns tipos de erros que podem acontecer no nosso sistema, em tempo de execução. Quando repassamos o selo de autenticação alguma coisa que não é o que ele espera, ele já trata isso de uma maneira fácil, de não estourar um erro na tela do computador.
+
+## 5.2 N objetos e um comportamento
+
+Ao criarmos o Sistema de Autenticação do bytebank precisamos autenticar todos usuários que são Gerentes, Diretores e Funcionários. Além disso, os Clientes também precisam ser autenticados pelo mesmo sistema. Para isso criamos um método chamado autenticardentro de todas essas classes.
+
+Como é possível que o Sistema de autenticação consiga receber diversos tipos de objetos por parâmetro e mesmo assim continuar funcionando?
+
+ - Isso é possível porque o JS não é uma linguagem fortemente tipada e por isso não depende apenas dos tipos pré-definidos mas sim se eles possuem ou não as propriedades que queremos utilizar.: Exatamente, assim não estamos limitados aos tipos e sim as interfaces que as classes expões.
+
+ - Através do polimorfismo o JS consegue tratar diferentes objetos de maneiras semelhantes e por isso conseguimos autenticar diferentes tipos de objetos em nosso sistema: Sim! O Polimorfismo é uma ferramenta muito importante dentro das linguagens de programação, por isso é importante que você saiba como utilizá-lo
+
+## 5.3 Duck Type
+
+Até agora nós vimos as propriedades e o quão poderoso é o polimorfismo, que é aquela propriedade de tratarmos objetos diferentes de maneiras similares.
+
+Fizemos aqui com o nosso sistema de autenticação, passamos um gerente, um diretor e um cliente para esse sistema de autenticação, e com uma única função, um único método dentro do nosso sistema de autenticação, que é esse login, o nosso método para a pessoa logar dentro do nosso sistema.
+
+Conseguimos verificar vários tipos de objetos diferentes, conseguimos fazer a autenticação de um diretor, de um gerente, de um cliente, tanto de classes que estão dentro de uma árvore de herança, onde todas elas têm o método autenticar, quanto de um objeto que não tem herança nenhuma, que é um objeto solto, que também tem o método autenticar().
+
+Dessa maneira conseguimos ver quão poderoso é o polimorfismo, e é uma das coisas fundamentais de orientação a objetos. Orientação a objetos tem dois pilares muito importantes, polimorfismo, que é essa habilidade de tratarmos objetos diferentes de maneiras semelhantes, isso vai economizar muito código e economizar muitos if's nosso código.
+
+Porque pense que no nosso SistemaAutenticacao, se eu tivesse que ficar verificando todos os tipos, se o autenticável for uma instância – já que já vimos o instanceof – de Cliente, eu teria que chamá-lo de um jeito. Se ele fosse uma instância de diretor, eu teria que chamá-lo de outro. Se ele fosse uma instância de Gerente, eu teria que chamá-lo de outro
+
+Para evitar esse monte de if's possíveis de fazer, no caso nós teríamos três if's. Eu não preciso de tudo isso porque eu estou falando: autenticavel, esse parâmetro que eu estou recebendo, não me interessa se ele é um instância de Cliente, de Gerente, de Diretor, se ele é uma instância de qualquer outra coisa.
+
+Me interessa é que ele tem o comportamento e as propriedades específicas que eu estou utilizando, me interessa que ele tenha o método autenticar(). É isso que me interessa e é isso que vou verificar aqui. Essa é a única verificação que estamos fazendo e nós não nos importamos tanto com o tipo daquele objeto.
+
+Inclusive, essa maneira de trabalhar tem um nome e chama duck typing, é o tipo do pato. O duck typing é muito comum em linguagens que são fracamente tipadas.
+
+Em linguagens fortemente tipadas, onde dentro do login eu teria que definir qual é o tipo dele, eu teria que definir se ele é um diretor ou se ele é um funcionário e assim por diante, colocando aqui um tipo na frente do meu parâmetro de login, eu não teria esse problema, porque o próprio compilador estaria verificando isso para mim.
+
+Mas em linguagens que são interpretados e fracamente tipadas, como o JavaScript, o duck typing tem essa característica muito presente.
+
+Porque se formos ver formalmente, vim aqui no verbete da Wikipedia para duck typing, acessível neste link, em programação é a aplicação do teste do pato, como eles estão falando aqui. Se ele anda como um pato, se ele faz "quack" como um pato, ele deve ser um pato, no sentido de que não me interessa se ele é de verdade um pato, me interessa que ele anda como um pato e que ele faz "quack" como um pato. Se ele é um pato de verdade ou não, tanto faz.
+
+Traduzindo isso para programação, não me interessa o tipo dele, me interessa o que aquele objeto consegue fazer. Se ele tem a presença de ter determinados métodos e propriedades. Dessa maneira que nós trabalhamos com o JavaScript, usando duck typing.
+
+**Não me interessa se ele é do tipo Cliente, do tipo Funcionario, do tipo ContaCorrente, me interessa se ele tem o método e a propriedade que eu quero utilizar, se ele tem aquilo, eu vou utilizar independentemente do tipo. Por isso nós falamos que é o duck typing, ele passa o teste do pato. Se ele tem a propriedade que eu quero usar, então eu vou usá-lo dessa maneira**.
+**E o polimorfismo é essa ferramenta superimportante para orientação a objetos, para o nosso sistema, para conseguirmos tratar objetos diferentes economizando e reutilizando código de uma maneira bem legal.**
+
+**Outro pilar muito importante da orientação a objetos é o encapsulamento, que vimos bastante no curso anterior, onde queremos proteger o máximo possível as propriedades e os atributos que são sensíveis à nossa classe. Vimos muito isso na nossa conta, no geral.**
+
+Numa conta eu quero proteger o cliente, eu quero proteger o saldo e eu tenho maneiras de fazer isso. Eu terei os meus assessores, como o get e o set, eu vou ter um método que está na linguagem do negócio e que faz o manuseio dessas propriedades internas no meu objeto, sem precisarmos expor isso para outras classes. Então encapsular o comportamento é outra coisa superimportante da orientação a objetos.
+
+Só queria deixar bem claro esses dois pontos, orientação a objetos tem herança, tem propriedades, tem métodos, tem uma série de coisas, mas duas coisas superimportantes são polimorfismo e encapsulamento
