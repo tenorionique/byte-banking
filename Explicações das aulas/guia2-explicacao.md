@@ -324,4 +324,94 @@ Aprendemos nessa aula sobre o conceito de Métodos e Classes abstratas. Selecion
 
 ## 4. 3 Interfaces
 
+- Vimos essa nova palavra, o polimorfismo. Se olharmos agora, é um pouco não intuitivo esse novo conceito, vamos explorá-lo um pouco mais para ver como podemos definir e entendê-lo um pouco melhor.
+- esse método estático chamado login() na classe SistemaAutenticacao, ele recebe um funcionário, ou seja, ele recebe um objeto que estamos esperando, que seja um funcionário, por isso que colocamos o nome de funcionário aqui.E vai verificar, esse funcionário tem uma senha? Se essa senha for igual à senha que foi passada, então eu estou aceitando e eu vou retornar verdadeiro, porque eu vou deixá-lo logar.
+
+- Mas, na verdade, o polimorfismo quer dizer que podemos ter diferentes objetos, diferentes classes sendo tratadas da mesma forma. É um objeto tratado de várias formas ou que se transforma em várias formas, por isso polimorfismo. E nesse caso, temos o diretor e o gerente herdando da classe Funcionario, que tem a nossa senha e tem a propriedade senha.
+
+- O ByteBank agora quer outra coisa: “Eu tenho meu diretor e meu gerente, os dois estão conseguindo logar no meu sistema, mas eu quero que o meu cliente também logue nesse sistema”. Nosso trabalho agora é fazer com que o cliente também fique logado, com que ele também consiga ser autenticado pelo nosso sistema de autenticação.
+
+- Na classe Cliente, vamos passar no construct de Cliente, um novo parametro senha;
+
+        constructor(nome, cpf,senha){
+            this.nome = nome;
+            this._cpf = cpf;
+            this._senha = senha;
+        }
+
+- Agora no index.js se instanciarmos cliente e chamarmos SistemaAutenticacao.login()
+    const cliente = new Cliente( "Lais", 7895632148, "456")
+
+    const clienteEstaLogado = SistemaAutenticacao.login(cliente, "456");
+
+- E dermos um console.log(clienteEstaLogado), vamos tomar um false. Por que?
+- Por que o SistemaAutenticação.login() tem um return de comparação assim: 
+    return funcionario.senha == senha;
+- Só se olharmos nosso constructor de Cliente, nós temos um this._senha. E lembrando: senha e _senha são coisas diferentes. Logo o que temos é um senha chegando como undefined naquela comparação acima. undefinde === "456" é falso. 
+- um adendo, vamos editar o SistemaAutenticacao:
+    export class SistemaAutenticacao {
+        static login(funcionario, senha) {
+            return funcionario.senha == senha;
+        }
+    }
+- Para: 
+    export class SistemaAutenticacao {
+        static login(autenticavel, senha) {
+            return autenticavel.senha == senha;
+        }
+    }
+- isso quer dizer que, não vamos necessariamente receber funcionario, pois essa classe funciona com outros objetos também, não só os herdeiros de funcionario, acabamos de usar Cliente, que não é herdeiro de funcionario e a comparação foi executada. 
+- Mas dessa forma ainda nao esta bom, temos nossa senha muito exposta, e não queremos que ela vaze. 
+Então vamos criar um método autenticar() que recebe senha por parametro. 
+Então se essa senha existir em alguma classe (genericamente referenciada como autenticavel) que contenha esse metodo autenticar, aí eu vou retornar verdadeiro ou falso
+
+    export class SistemaAutenticacao {
+        static login(autenticavel, senha) {
+            return autenticavel.autenticar(senha);
+        }
+    } 
+
+- Na classe Funcionario, tirou o get senha() e colocou o autenticar(). 
+-  É um método que vai receber uma senha e dessa senha eu vou dar um return verificando se essa senha é igual à senha que ele tem internamente. Dessa forma eu não preciso expor essa propriedade _senha e ainda consigo tratar todo mundo como se tivesse esse polimorfismo, como se estivesse sendo autenticável.
+
+    autenticar( senha) {
+        return senha == this._senha
+    }
+
+
+- Não implementei esse método em Cliente, então quando fui ver o console.log que esta no index, recebo um erro pois não existe o método autenticar() nele. 
+    const clienteEstaLogado = SistemaAutenticacao.login(cliente, "456");
+    console.log(clienteEstaLogado);
+
+- E se ele não tiver esse método, ele vai dar um erro, porque quando abrimos e fechamos parênteses aqui, ele está tentando executar esse método. E um método não vai vir undefined, ele não vai colocar isso por padrão lá no objeto do JavaScript, então ele vai dar um erro, ele vai falar: “Você está querendo executar uma função que não existe”, e nós tomamos um erro.
+- Quando estamos falando de funções, vamos tomar um erro, quando estamos falando de propriedades, ele vai vir para o padrão undefined. Comportamentos dentro do JavaScript aos quais temos que estar atentos.
+- O nosso sistema de autenticação se preocupa com todo mundo que tem o método chamado autenticar. Se meu cliente tiver um método chamado autenticar() que sempre retorna verdadeiro, ele vai conseguir ser autenticável.
+- E dessa forma conseguimos ver que o nosso sistema de autenticação se preocupa muito mais com a interface que os objetos expõem, com o que podemos manusear e manipular deles, métodos e propriedades, do que com qual o tipo deles de fato.
+- Não interessa para esse sistema de autenticação se eu sou um cliente, se eu sou um diretor, se eu sou um gerente, se eu sou um funcionário, se eu sou uma conta. Se eu tiver o método autenticar(), quer dizer que eu sou autenticável, então eu posso executar aqui.
+- Só que se eu não for, se eu não tiver, como não tínhamos no Cliente, vamos tomar um erro e temos que nos proteger disso também, porque eu não quero ficar tomando erro porque eu passei uma interface, uma classe errada para um sistema onde ela não é compatível. Vamos ver como arrumar esse erro daqui a pouco.
+
+## 4.4 Comportamento indefinido
+André está criando um sistema de Contas para o banco ByteBank e está tendo alguns comportamentos inesperados quando executa o seguinte código:
+
+    class Conta {
+    constructor(titular, numero) {
+        this.titular = titular;
+        this.numero = numero;
+        this._saldo = 0;
+    }
+    }
+
+    class ContaCorrente extends Conta {
+    constructor(titular, numero) {
+        super(titular, numero);
+    }
+    }
+
+    const conta = new ContaCorrente("Andre", 1245);
+    console.log(conta.saldo)
+
+Acontece que na hora que ele executa o código o único que aparece no console dele é o texto "undefined". Por que isso acontece?
+
+R: Isso acontece pois a propriedade saldo não está definida dentro do objeto conta e por isso retorna undefined.: Correto, por padrão o JS adiciona como undefined no objeto uma propriedade que tentamos acessar caso ela não exista.
+
 # 5. Interfaces e DuckType
