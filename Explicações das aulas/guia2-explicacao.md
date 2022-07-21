@@ -252,8 +252,75 @@ Aprendemos nessa aula sobre o conceito de Métodos e Classes abstratas. Selecion
 - Além do que, um diretor tem um nível de acesso no sistema que vamos criar mais pra frente, maior, e um gerente vai ter um nível de acesso menor no sistema que estamos criando, eles terão acesso a dados diferentes, por isso é importante já termos aqui as classes separadas, porque o banco já nos falou: "Eu preciso de um gerente, eu preciso de um diretor e eles vão trabalhar de maneiras diferentes".
 - Agora já temos o nosso diretor e o nosso gerente criados, já temos a nossa classe Funcionario inicialmente criada só com as propriedades, e vamos explorar um pouco mais de como esse sistema tem que funcionar daqui a pouco.
 ## 4.2 Polimorfismo
-- 
+- Como vimos, temos agora dois funcionários, um gerente e um diretor, e precisamos criar nosso sistema de autenticação, já que para eles usarem o sistema que o ByteBank pediu para criarmos, aquele sistema interno do banco, vamos precisar autenticar esses funcionários e  vamos precisar saber a senha deles. Eles vão ter que ter uma senha para conseguirem se autenticar.
+-  Lá na minha classe Funcionario, já que eu vou ter meu diretor e meu gerente podendo usar esse sistema de autenticação, eu vou vir aqui na classe Funcionario e vou colocar uma senha, então this._senha, vamos ter uma senha aqui no nosso funcionário.
+- E essa senha será cadastrada depois, já que primeiro eu vou criar um funcionário e depois eu vou pegar essa senha, então eu vou ter aqui um método chamado "cadastrar senha", onde configuramos essa senha para a pessoa usar.
+- Eu vou chamar o método cadastrarSenha, e ele vai receber uma (senha) e ele vai atribuir inicialmente ao this._senha para a senha que foi pedida. Vamos agora ter esse cadastro de senha tanto no Diretor quanto no Gerente, porque os dois vão utilizar aquele sistema interno que estamos criando.
 
+    export class Funcionario {
+        constructor(nome, salario, cpf) {
+            this._nome = nome;
+            this._salario = salario;
+            this._cpf = cpf;
+
+            this._bonificacao = 1;
+            this._senha;
+        }
+        
+        cadastrarSenha(senha) {
+            this._senha = senha;
+        }
+
+    }
+- Diretor e Gerente herdam essas caracteristicas de Funcionario
+- Agora no index.js eu instancio novo diretor e novo gerente. 
+    const diretor = new Diretor("Rodrigo", 10000, 123456789);
+    const gerente = new Gerente("Ricardo", 5000, 1236549871);
+
+- Agora tenho o meu diretor e o meu gerente, só que queremos ter um sistema de autenticação, eu quero conseguir fazer com que ele se logue nesse sistema. Então abriu outro arquivo SistemaAutenticaçcao
+    export class SistemaAutenticacao {
+        static login(funcionario, senha) {
+            return funcionario.senha == senha;
+        }
+    }
+- E esse método estático login() vai receber o funcionário, quem está se logando, e vai receber uma senha. Eu quero que esse método login() retorne verdadeiro quando a senha do meu funcionário for igual a senha que foi passada pelo parâmetro senha do meu login().
+-  Então o que eu quero fazer é funcionario.senha tem que ser igual a senha. Se isso for verdadeiro, eu vou retornar que ele está logado, então eu vou retornar só essa expressão, funcionario.senha == senha.
+- Você pode ver que eu tenho que acessar a senha do funcionário, e aí a importância de começarmos as coisas sempre com o método de propriedades privadas, porque não sabemos exatamente como teremos que acessar. Mas a senha, por exemplo, é uma informação sensível. 
+- La na classe Funcionarios, vou fazer um método getter (assessor de leitura) get senha() que vai retornar a nossa senha. this._senha
+
+    export class Funcionario {
+        constructor(nome, salario, cpf) {
+            this._nome = nome;
+            this._salario = salario;
+            this._cpf = cpf;
+
+            this._bonificacao = 1;
+            this._senha;
+        }
+
+        get senha() {
+            return this._senha;
+        }
+        cadastrarSenha(senha) {
+            this._senha = senha;
+        }
+
+    }
+
+- Dessa maneira nós conseguimos manter o encapsulamento da nossa classe, expondo só o que precisamos. Essa propriedade senha, ninguém consegue atribuí-la, eu só consigo atribuí-la através do cadastrarSenha(), e aqui eu posso ter outras seguranças para chamar esse método cadastrarSenha(), mas o meu sistema de autenticação só se preocupa com esse assessor get.
+
+- Agora no index cadastramos uma senha para o diretor e o gerente:
+    diretor.cadastrarSenha("123456");
+    gerente.cadastrarSenha("45678");
+
+- Agora vamos ver se eles estão logados, salvo numa constante e chamo a classe estatica SistemaAutenticacao.login() e passo os dois parametros de funcionario, e de senha. 
+
+    const estaLogado = SistemaAutenticacao.login(diretor, "123456");
+    const estaLogado2 = SistemaAutenticacao.login(gerente, "45678");
+
+- Vai executar a comparação dentro de login() e retornar true para ambos os casos, pois as senhas são iguais
+- E você pode ver que é legal que usando classes, tanto o meu diretor quanto o meu gerente são funcionários, como eles têm propriedades semelhantes, eu consigo usá-los de maneira intercambiável ou colocar meu gerente aqui no SistemaAutenticacao.login, ou meu diretor, sem precisar mudar o código da autenticação.
+-  E essa propriedade dos objetos de tomarem várias formas ou até de recebermos aqui na autenticação um funcionário mais genérico e conseguir reutilizá-lo, independentemente de ele ser um diretor ou um gerente, é chamado de **polimorfismo**.
 
 ## 4. 3 Interfaces
 
