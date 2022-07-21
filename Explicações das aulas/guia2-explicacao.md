@@ -236,6 +236,25 @@ Qual o problema com essa decisão?
 -  A conta tem o método sacar, esse método existe, porque nós queremos definir que toda conta vai ter o método sacar, mas ele não vai ter nada. E se ele não vai ter nada, se alguém esquecer, por acaso, de chamá-lo, eu tenho que lançar um erro. Da mesma maneira que lançamos um erro quando tentamos construir diretamente uma classe abstrata, podemos lançar um erro quanto tentarmos chamar o método abstrato.
 - Então, na Conta, no meu método sacar() eu vou também lançar um novo erro, e a mensagem desse erro vai ser: "O método Sacar da conta é abstrato". Se ele é abstrato, alguém esqueceu de chamá-lo. Se eu fizer isso agora e pedirmos para limpar o nosso terminal e para executar de novo, vamos vir aqui no terminal, agora sim ele deu um erro, falando que ele para justamente onde lançamos o erro e ele fala: "O método Sacar da conta é abstrato".
 
+## 4.5 Refletindo sobre o tema: Métodos e Classes Abstratas
+
+Aprendemos nessa aula sobre o conceito de Métodos e Classes abstratas. Selecione as afirmativas corretas sobre esses temas:
+ - Classes abstratas são pensadas de forma que elas apenas possam ser herdadas por outras.: Exatamente, elas nos ajudam a criar abstrações no código e a compartilhar código entre outras classes
+  - Métodos abstratos devem ser sobrescritos pelas classes filhas.: Isso mesmo, dessa forma não faz sentido termos um método abstrato fora de uma classe abstrata. Tome esse cuidado quando for criar seu código.
+
 # 4. Sistema Interno
+
+## 4.1 Criando funcionarios
+- byte-bank: Vocês podem criar para nós um sistema para os meus gerentes e diretores?
+- Criamos pastas pra separar contas de funcionários
+- Criamos uma classe Mãe Funcionário
+- E criamos Gerente e Diretor, que apesar de serem bem parecidos, já tem bonificação diferente
+- Além do que, um diretor tem um nível de acesso no sistema que vamos criar mais pra frente, maior, e um gerente vai ter um nível de acesso menor no sistema que estamos criando, eles terão acesso a dados diferentes, por isso é importante já termos aqui as classes separadas, porque o banco já nos falou: "Eu preciso de um gerente, eu preciso de um diretor e eles vão trabalhar de maneiras diferentes".
+- Agora já temos o nosso diretor e o nosso gerente criados, já temos a nossa classe Funcionario inicialmente criada só com as propriedades, e vamos explorar um pouco mais de como esse sistema tem que funcionar daqui a pouco.
+## 4.2 Polimorfismo
+- 
+
+
+## 4. 3 Interfaces
 
 # 5. Interfaces e DuckType
